@@ -1,4 +1,6 @@
 package com.example.starwars;
+import static Modelo.Game.MACHINE;
+
 import android.annotation.TargetApi;
 import android.graphics.Color;
 import android.media.AudioAttributes;
@@ -92,13 +94,12 @@ public class MainActivity extends AppCompatActivity {
                 if (game.getState() == Game.START) {
                     if (view.getId() == bsubmit.getId()) {
                         getCharacterAPIColors();
-                        for (CharacterColor characterColor : listCharacter) {
-                            game.play(characterColor);
+                            game.play();
                             playMachineSequence();
                             Handler h = new Handler();
                             h.postDelayed(new RunnableState(Game.PLAYER)
                                     , TIME_DELAY * game.getTiradasMachine().size());
-                        }
+
                     }
 
                 } else if (game.getState() == Game.PLAYER) {
@@ -125,8 +126,7 @@ public class MainActivity extends AppCompatActivity {
                         game.setState(Game.START);
                         //SI HAY AUDIO ERROR?
                     } else if (result == Game.OK_LIST_EQUALS) {
-                        for (CharacterColor characterColor : listCharacter) {
-                            game.nextLevel(characterColor);
+                            game.nextLevel();
                             getCharacterAPIColors();
                             Handler h = new Handler();
                             h.postDelayed(new RunnnablePlayMachineSequence(), TIME_DELAY);
@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
-            }
         };
     }
     class RunnnablePlayMachineSequence implements Runnable {
@@ -250,32 +249,40 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            for (int i = 0; i < listCharacter.size(); i++) {
-
-                                if (listCharacter.get(i).getCharacter() == "C3PO" && listCharacter.get(i).getColor() == "blue") {
+                            for (CharacterColor characterColor : listCharacter)  {
+                                characterColor.determineSoundId();
+                                if (characterColor.getCharacter() == "C3PO" && characterColor.getColor() == "blue") {
                                     ivcharacter.setImageResource(R.drawable.c3po);
                                     tvcolor.setBackgroundColor(Color.BLUE);
-                                } else if (Objects.equals(listCharacter.get(i).getCharacter(), "C3PO") && Objects.equals(listCharacter.get(i).getColor(), "red")) {
+
+                                } else if (characterColor.getCharacter()=="C3PO" && characterColor.getColor()=="red") {
                                     ivcharacter.setImageResource(R.drawable.c3po);
                                     tvcolor.setBackgroundColor(Color.RED);
-                                } else if (Objects.equals(listCharacter.get(i).getCharacter(), "Chewaka") && Objects.equals(listCharacter.get(i).getColor(), "blue")) {
+                                    game.setNumColors(sonc3po);
+                                } else if (characterColor.getCharacter() == "Chewaka" && characterColor.getColor()=="blue") {
                                     ivcharacter.setImageResource(R.drawable.chewaka_blue);
                                     tvcolor.setBackgroundColor(Color.BLUE);
-                                } else if(Objects.equals(listCharacter.get(i).getCharacter(), "Chewaka") && Objects.equals(listCharacter.get(i).getColor(), "red")) {
+                                    game.setNumColors(sonChewbacca);
+                                } else if(characterColor.getCharacter() == "Chewaka" && characterColor.getColor()== "red") {
                                     ivcharacter.setImageResource(R.drawable.chewaka_red);
                                     tvcolor.setBackgroundColor(Color.RED);
-                                } else if(Objects.equals(listCharacter.get(i).getCharacter(), "R2D2") && Objects.equals(listCharacter.get(i).getColor(), "blue")) {
+                                    game.setNumColors(sonChewbacca);
+                                } else if(characterColor.getCharacter() == "R2D2" && characterColor.getColor()=="blue") {
                                     ivcharacter.setImageResource(R.drawable.r2d2);
                                     tvcolor.setBackgroundColor(Color.BLUE);
-                                } else if(Objects.equals(listCharacter.get(i).getCharacter(), "R2D2") && Objects.equals(listCharacter.get(i).getColor(), "red")) {
+                                    game.setNumColors(sonr2d2);
+                                } else if(characterColor.getCharacter() == "R2D2" && characterColor.getColor()=="red") {
                                     ivcharacter.setImageResource(R.drawable.r2d2);
                                     tvcolor.setBackgroundColor(Color.RED);
-                                } else if(Objects.equals(listCharacter.get(i).getCharacter(), "Darth Vader") && Objects.equals(listCharacter.get(i).getColor(), "blue")) {
+                                    game.setNumColors(sonr2d2);
+                                } else if(characterColor.getCharacter() == "Darth Vader" && characterColor.getColor()=="blue"){
                                     ivcharacter.setImageResource(R.drawable.darthvader);
                                     tvcolor.setBackgroundColor(Color.BLUE);
-                                } else if(Objects.equals(listCharacter.get(i).getCharacter(), "Darth Vader") && Objects.equals(listCharacter.get(i).getColor(), "red")) {
+                                    game.setNumColors(sonDarkVader);
+                                } else if(characterColor.getCharacter() == "Darth Vader" && characterColor.getColor()=="red") {
                                     ivcharacter.setImageResource(R.drawable.darthvader);
                                     tvcolor.setBackgroundColor(Color.RED);
+                                    game.setNumColors(sonDarkVader);
                                 }
                             }
                         }

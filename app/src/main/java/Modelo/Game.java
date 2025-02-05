@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import webservice.CharacterColor;
+import webservice.CharacterColorRestClient;
 
 public class Game {
     public static final int START = 1, MACHINE = 2, PLAYER =3;
@@ -79,18 +80,15 @@ public class Game {
     }
     public void nextLevel(CharacterColor characterColor) {
         state = MACHINE;
-        tiradasPlayer.clear();
-        Colors color = characterColor.getColor().equals("blue") ? Colors.BLUE : Colors.RED;
-        int soundId = characterColor.getSoundId();
-        tiradasMachine.add(new ColorAudio(color, soundId));
+        tiradasPlayer.clear();;
+        tiradasMachine.add(gameColors.set());
+
     }
-    public void play(CharacterColor characterColor){
+    public void play(){
         state = MACHINE;
         tiradasMachine.clear();
         tiradasPlayer.clear();
-        Colors color = characterColor.getColor().equals("blue") ? Colors.BLUE : Colors.RED;
-        int soundId = characterColor.getSoundId();
-        tiradasMachine.add(new ColorAudio(color, soundId));
+        tiradasMachine.add();
     }
 
 }
