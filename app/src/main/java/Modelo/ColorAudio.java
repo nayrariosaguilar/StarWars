@@ -3,15 +3,15 @@ package Modelo;
 import webservice.CharacterColor;
 
 public class ColorAudio {
-    CharacterColor color;
+    Colors color;
     int audio;
 
-    public ColorAudio(CharacterColor color, int audio) {
+    public ColorAudio(Colors color, int audio) {
         this.color = color;
         this.audio = audio;
     }
 
-    public CharacterColor getColor() {
+    public Colors getColor() {
         return color;
     }
 

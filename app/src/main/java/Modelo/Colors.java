@@ -1,5 +1,5 @@
 package Modelo;
 
-public enum Starwars {
+public enum Colors {
     BLUE,RED
 }
