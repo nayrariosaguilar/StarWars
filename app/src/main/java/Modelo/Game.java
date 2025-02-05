@@ -1,9 +1,9 @@
 package Modelo;
 
-import android.graphics.Color;
-
 import java.util.ArrayList;
 import java.util.Random;
+
+import webservice.CharacterColor;
 
 public class Game {
     public static final int START = 1, MACHINE = 2, PLAYER =3;
@@ -77,19 +77,20 @@ public class Game {
         }
         return ret;
     }
-    public void nextLevel(){
+    public void nextLevel(CharacterColor characterColor) {
         state = MACHINE;
         tiradasPlayer.clear();
-        tiradasMachine.add(getRandomColor());
+        Colors color = characterColor.getColor().equals("blue") ? Colors.BLUE : Colors.RED;
+        int soundId = characterColor.getSoundId();
+        tiradasMachine.add(new ColorAudio(color, soundId));
     }
-    public void play(){
+    public void play(CharacterColor characterColor){
         state = MACHINE;
         tiradasMachine.clear();
         tiradasPlayer.clear();
-        tiradasMachine.add(getRandomColor());
+        Colors color = characterColor.getColor().equals("blue") ? Colors.BLUE : Colors.RED;
+        int soundId = characterColor.getSoundId();
+        tiradasMachine.add(new ColorAudio(color, soundId));
     }
-    public ColorAudio getRandomColor(){
-        int rnd = new Random().nextInt(gameColors.size());
-        return gameColors.get(rnd);
-    }
+
 }

@@ -92,42 +92,48 @@ public class MainActivity extends AppCompatActivity {
                 if (game.getState() == Game.START) {
                     if (view.getId() == bsubmit.getId()) {
                         getCharacterAPIColors();
-                        game.play();
-                        playMachineSequence();
-                        Handler h = new Handler();
-                        h.postDelayed(new RunnableState(Game.PLAYER)
-                                , TIME_DELAY * game.getTiradasMachine().size());
+                        for (CharacterColor characterColor : listCharacter) {
+                            game.play(characterColor);
+                            playMachineSequence();
+                            Handler h = new Handler();
+                            h.postDelayed(new RunnableState(Game.PLAYER)
+                                    , TIME_DELAY * game.getTiradasMachine().size());
+                        }
                     }
+
                 } else if (game.getState() == Game.PLAYER) {
                     if (view.getId() == chewakablue.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.BLUE, sonChewbacca));
-                    }else if(view.getId() == chewakared.getId()) {
+                    } else if (view.getId() == chewakared.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.RED, sonChewbacca));
-                    }else if(view.getId() == c3poblue.getId()) {
+                    } else if (view.getId() == c3poblue.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.BLUE, sonc3po));
-                    }else if(view.getId() == c3pored.getId()) {
+                    } else if (view.getId() == c3pored.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.RED, sonc3po));
-                    }else if(view.getId() == r2d2blue.getId()) {
+                    } else if (view.getId() == r2d2blue.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.BLUE, sonr2d2));
-                    }else if (view.getId() == r2d2red.getId()) {
+                    } else if (view.getId() == r2d2red.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.RED, sonr2d2));
-                    }else if(view.getId() == darthvaderblue.getId()) {
+                    } else if (view.getId() == darthvaderblue.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.BLUE, sonDarkVader));
-                    }else if(view.getId() == darthvaderred.getId()) {
+                    } else if (view.getId() == darthvaderred.getId()) {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.RED, sonDarkVader));
                     }
                     //ERROR, OK_LIST_EQUALS, OK_LIST_NOT_EQUALS
                     int result = game.CompareColors();
-                    if(result == Game.ERROR){
-                       game.setState(Game.START);
-                       //SI HAY AUDIO ERROR?
-                    }else if(result == Game.OK_LIST_EQUALS) {
-                        game.nextLevel();
-                        getCharacterAPIColors();
-                        Handler h = new Handler();
-                        h.postDelayed(new RunnnablePlayMachineSequence(), TIME_DELAY);
-                        h.postDelayed(new RunnableState(Game.PLAYER), TIME_DELAY * game.getTiradasMachine().size()+TIME_DELAY);
-                   }
+                    if (result == Game.ERROR) {
+                        game.setState(Game.START);
+                        //SI HAY AUDIO ERROR?
+                    } else if (result == Game.OK_LIST_EQUALS) {
+                        for (CharacterColor characterColor : listCharacter) {
+                            game.nextLevel(characterColor);
+                            getCharacterAPIColors();
+                            Handler h = new Handler();
+                            h.postDelayed(new RunnnablePlayMachineSequence(), TIME_DELAY);
+                            h.postDelayed(new RunnableState(Game.PLAYER), TIME_DELAY * game.getTiradasMachine().size() + TIME_DELAY);
+                        }
+                    }
+
                 }
             }
         };
