@@ -16,7 +16,8 @@ import java.util.List;
 public class CharacterColorRestClient {
 
     //URL base de la API de Marvel. Totes les peticions parteixen d'aquí.
-    final private String baseUrl = "https://bibils.net/dam2/listcolor.php?num=20";
+    //final private String baseUrl = "https://bibils.net/dam2/listcolor.php?num=20";
+    final private String baseUrl = "https://bibils.net/dam2/newcolor.php";
     public ArrayList<CharacterColor> listCharacters() throws IOException {
 
         ArrayList<CharacterColor> characters = new ArrayList<>();
@@ -29,16 +30,17 @@ public class CharacterColorRestClient {
         con.connect();
         int responseCode = con.getResponseCode();
         System.out.println("Response status: " + con.getResponseCode() + " " + con.getResponseMessage());
-        System.out.println("Response Body : ");
+
         if(responseCode != 200){
             return new ArrayList<>();
         }
         String response = getResponseBody(con);
-      //  JsonArray jsonObject = JsonParser.parseString(response).getAsJsonArray();
+
         try{
-            JsonArray jsonObject = JsonParser.parseString(response).getAsJsonArray();
-            for (JsonElement element : jsonObject) {
-                CharacterColor character = new Gson().fromJson(element, CharacterColor.class);
+            JsonElement jsonElement = JsonParser.parseString(response);
+            System.out.println("Response Body : "+response);
+            if(jsonElement.isJsonObject()) {
+                CharacterColor character = new Gson().fromJson(jsonElement, CharacterColor.class);
                 characters.add(character);
             }
         }catch(Exception e){

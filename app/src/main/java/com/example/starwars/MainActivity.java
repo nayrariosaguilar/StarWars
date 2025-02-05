@@ -28,9 +28,6 @@ import webservice.CharacterColor;
 import webservice.CharacterColorRestClient;
 
 public class MainActivity extends AppCompatActivity {
-    // començaria reproduint una seqüència de sons,
-    // cadascun associat a un personatge i a la vegada es veurà un color.
-    //webservice de https://bibils.net/dam2/listcolor.php?num=20
     //random del 1 al 10 que el jugador relique
     //num es el numero de iteraciones
     ArrayList<CharacterColor> listCharacter;
@@ -73,36 +70,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             soundPool.play(coloaudio.getAudio(), 1, 1, 1, 0, 1);
-            //iluminate color
-            //iluminateColor(coloaudio.getColorSimon());
         }
-    }
-
-    private void generoLista() {
-        //0 a 10 y por cada uno de ellos le doy un add, reproducir la lista
-        game.getTiradasMachine().clear();
-        for (int i = 0; i < 10; i++) {
-            game.getTiradasMachine().add(getRandomColor());
-            //PlayLista tengo una lista de colores y sonidos vamos a hacer que suene
-
-        }
-    }
-
-    //mejorar esto
-    private ColorAudio getRandomColor() {
-        ColorAudio colorAudio;
-        //generamos un numero al azar
-        int rnd = new Random().nextInt(10);
-        if (rnd == 0) {
-            colorAudio = new ColorAudio(Colors.BLUE,sonc3po );
-        } else if (rnd == 1) {
-            colorAudio = new ColorAudio(Colors.BLUE,sonChewbacca);
-        } else if (rnd == 2) {
-            colorAudio = new ColorAudio(Colors.BLUE, sonDarkVader);
-        } else {
-            colorAudio = new ColorAudio(Colors.RED,sonr2d2);
-        }
-        return colorAudio;
     }
     private void setListeners() {
         bsubmit.setOnClickListener(listener);
@@ -149,11 +117,13 @@ public class MainActivity extends AppCompatActivity {
                         game.getTiradasPlayer().add(new ColorAudio(Colors.RED, sonDarkVader));
                     }
                     //ERROR, OK_LIST_EQUALS, OK_LIST_NOT_EQUALS
-                    if(game.CompareColors() == Game.ERROR){
+                    int result = game.CompareColors();
+                    if(result == Game.ERROR){
                        game.setState(Game.START);
                        //SI HAY AUDIO ERROR?
-                    }else if(game.CompareColors() == Game.OK_LIST_EQUALS) {
+                    }else if(result == Game.OK_LIST_EQUALS) {
                         game.nextLevel();
+                        getCharacterAPIColors();
                         Handler h = new Handler();
                         h.postDelayed(new RunnnablePlayMachineSequence(), TIME_DELAY);
                         h.postDelayed(new RunnableState(Game.PLAYER), TIME_DELAY * game.getTiradasMachine().size()+TIME_DELAY);
@@ -202,6 +172,13 @@ public class MainActivity extends AppCompatActivity {
         //RESTO
         game.addColor(new ColorAudio(Colors.BLUE, sonChewbacca));
         game.addColor(new ColorAudio(Colors.RED, sonChewbacca));
+        game.addColor(new ColorAudio(Colors.BLUE, sonc3po));
+        game.addColor(new ColorAudio(Colors.RED, sonc3po));
+        game.addColor(new ColorAudio(Colors.BLUE, sonr2d2));
+        game.addColor(new ColorAudio(Colors.RED, sonr2d2));
+        game.addColor(new ColorAudio(Colors.BLUE, sonDarkVader));
+        game.addColor(new ColorAudio(Colors.RED, sonDarkVader));
+
     }
 
     /**
@@ -269,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             for (int i = 0; i < listCharacter.size(); i++) {
 
-                                if (Objects.equals(listCharacter.get(i).getCharacter(), "C3PO") && Objects.equals(listCharacter.get(i).getColor(), "blue")) {
+                                if (listCharacter.get(i).getCharacter() == "C3PO" && listCharacter.get(i).getColor() == "blue") {
                                     ivcharacter.setImageResource(R.drawable.c3po);
                                     tvcolor.setBackgroundColor(Color.BLUE);
                                 } else if (Objects.equals(listCharacter.get(i).getCharacter(), "C3PO") && Objects.equals(listCharacter.get(i).getColor(), "red")) {
