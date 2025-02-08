@@ -8,10 +8,9 @@ import webservice.CharacterColorRestClient;
 
 public class Game {
     public static final int START = 1, MACHINE = 2, PLAYER =3;
-    public static final int ERROR = -1, OK_LIST_EQUALS = 1, OK_LIST_DIFFERENT = 2;
+
     ArrayList<ColorAudio> tiradasMachine;
     ArrayList<ColorAudio> tiradasPlayer;
-    private ArrayList<ColorAudio> gameColors;
     int numColors;
     int state;
 
@@ -50,11 +49,10 @@ public class Game {
     public Game() {
         tiradasPlayer = new ArrayList<>();
         tiradasMachine = new ArrayList<>();
-        gameColors = new ArrayList<>();
     }
-    public void addColor(ColorAudio colorAudio) {
-        gameColors.add(colorAudio);
-    }
+//    public void addP(ColorAudio colorAudio) {
+//        gameColors.add(colorAudio);
+//    }
     public void initGame(){
         //el mismo objeto solo resetearlo
         tiradasPlayer.clear();
@@ -63,32 +61,31 @@ public class Game {
         numColors = 2;
     }
     //PARA COMPARAR COLORES
-    public int CompareColors() {
-        int ret = OK_LIST_DIFFERENT;
-        for (int i = 0; i < tiradasPlayer.size() && ret != ERROR; i++) {
-            if (tiradasPlayer.get(i).getColor() !=
-                    tiradasMachine.get(i).getColor()) {
-                ret = ERROR;
-            }/*else if(i == machineList.size() -1) { // Ultima comparacio machineList.size() -1
-                ret = OK_LIST_EQUALS;
-            }*/
+    public boolean CompareColors(){
+        //si todas son iguales retorna un true
+        boolean soniguales = true;
+        //en principio sera igual al tamaño de la maquina
+        for(int i =0;i<tiradasPlayer.size();i++){
+            if(    (tiradasPlayer.get(i).getImageId()!= tiradasMachine.get(i).getImageId()) ||
+                    (tiradasPlayer.get(i).getAudio() != tiradasMachine.get(i).getAudio()) ||
+                    (tiradasPlayer.get(i).getColor() != tiradasMachine.get(i).getColor())
+            ){
+                soniguales = false;
+            }
         }
-        if (tiradasMachine.size() == tiradasPlayer.size() && ret != ERROR) {
-            ret = OK_LIST_EQUALS;
-        }
-        return ret;
+        return soniguales;
     }
     public void nextLevel(CharacterColor characterColor) {
         state = MACHINE;
         tiradasPlayer.clear();;
-        tiradasMachine.add(gameColors.set());
+        //tiradasMachine.add(gameColors.set());
 
     }
     public void play(){
         state = MACHINE;
         tiradasMachine.clear();
         tiradasPlayer.clear();
-        tiradasMachine.add();
+        //tiradasMachine.add();
     }
 
 }
