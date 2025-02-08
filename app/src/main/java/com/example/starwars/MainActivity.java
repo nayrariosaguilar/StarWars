@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
+
         game = new Game();
         //Audio
         createSoundPool();
@@ -184,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initAudios() {
+
         sonc3po = soundPool.load(this, R.raw.c3po, 1);
         sonChewbacca = soundPool.load(this, R.raw.chewbacca, 1);
         sonDarkVader = soundPool.load(this, R.raw.darthvader, 1);
