@@ -39,9 +39,7 @@ public class MainActivity extends AppCompatActivity {
     Game game;
     Button bsubmit;
     SoundPool soundPool;
-    private int soundsToLoad = 4;
-    private int soundsLoadedCount = 0;
-    private boolean soundsLoaded = false;
+    private int score = 0;
     int sonc3po, sonChewbacca,sonDarkVader,sonr2d2;
     static final int TIME_DELAY = 1000;
     View.OnClickListener listener;
@@ -64,15 +62,12 @@ public class MainActivity extends AppCompatActivity {
         initListener();
         setListeners();
 
-
-        //getCharacterAPIColors();
-
     }
 
     private void initElements() {
         executor = Executors.newSingleThreadExecutor();
         tvcolor = findViewById(R.id.tvcolor);
-        //tvscore = findViewById(R.id.tvscore); PAL FINAL NAY
+        tvscore = findViewById(R.id.tvPuntuacio);
         bsubmit = findViewById(R.id.bsubmit);
         ivcharacter = findViewById(R.id.ivcharacter);
         chewakablue = findViewById(R.id.chewakablue);
@@ -121,65 +116,78 @@ public class MainActivity extends AppCompatActivity {
                             game.play();
                         game.getTiradasMachine().clear();
                         getCharacterAPIColors();
-                            playMachineSequence();
-                            Handler h = new Handler();
-                            h.postDelayed(new RunnableState(Game.PLAYER)
-                                  , TIME_DELAY * game.getTiradasMachine().size());
+//                            Handler h = new Handler();
+////                            h.postDelayed(new RunnableState(Game.PLAYER)
+//                                  , TIME_DELAY * game.getTiradasMachine().size());
 
                     }
                 } else if (game.getState() == Game.PLAYER) {
                     ColorAudio playerMove = null;
                     if (view.getId() == chewakablue.getId()) {
-                        playerMove= new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka_blue);
+                        playerMove= new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka);
                         Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == chewakared.getId()) {
-                        playerMove= new ColorAudio(Colors.RED, sonChewbacca, R.drawable.chewaka_red);
+                        playerMove= new ColorAudio(Colors.RED, sonChewbacca, R.drawable.chewaka);
                         Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     } else if (view.getId() == c3poblue.getId()) {
-                        playerMove= new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po_blue);
+                        playerMove= new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po);
                         Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == c3pored.getId()) {
-                        playerMove= new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po_red);
+                        playerMove= new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po);
                         Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     } else if (view.getId() == r2d2blue.getId()) {
-                        playerMove= new ColorAudio(Colors.BLUE, sonr2d2, R.drawable.r2d2_blue);
+                        playerMove= new ColorAudio(Colors.BLUE, sonr2d2, R.drawable.r2d2);
                         Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == r2d2red.getId()) {
-                        playerMove= new ColorAudio(Colors.RED, sonr2d2, R.drawable.r2d2_red);
+                        playerMove= new ColorAudio(Colors.RED, sonr2d2, R.drawable.r2d2);
                         Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     } else if (view.getId() == darthvaderblue.getId()) {
-                        playerMove= new ColorAudio(Colors.BLUE, sonDarkVader, R.drawable.darthvader_blue);
+                        playerMove= new ColorAudio(Colors.BLUE, sonDarkVader, R.drawable.darthvader);
                         Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == darthvaderred.getId()) {
-                        playerMove= new ColorAudio(Colors.RED, sonDarkVader, R.drawable.darthvader_red);
+                        playerMove= new ColorAudio(Colors.RED, sonDarkVader, R.drawable.darthvader);
                         Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     }
+                    //mientras
                     if(playerMove != null){
-                        Log.d(TAG, "Jugador seleccionó: " + playerMove.getColor() +
+                        Log.d(TAG,  playerMove.getColor() +
                                 " Movimiento número: " + (game.getTiradasPlayer().size() + 1));
 
                         game.getTiradasPlayer().add(playerMove);
                         new RunnableColor(playerMove).run();
                         //ERROR, OK_LIST_EQUALS, OK_LIST_NOT_EQUALS
-                        if(game.getTiradasPlayer().size() == game.getTiradasMachine().size()){
+                        if(game.getTiradasPlayer().size()<game.getTiradasMachine().size()){
+                            Log.d(TAG, "Esperando siguiente movimiento del jugador...");
+                        }else if(game.getTiradasPlayer().size() == game.getTiradasMachine().size()){
 
                             if (game.CompareColors()) {
-                                game.setState(MACHINE);
                                 game.getTiradasPlayer().clear();
+                                game.setState(MACHINE);
                                Handler h = new Handler();
                                h.postDelayed(new RunnnablePlayMachineSequence(), TIME_DELAY);
                                 h.postDelayed(new RunnableState(Game.PLAYER), TIME_DELAY * game.getTiradasMachine().size() + TIME_DELAY);
-                                Log.d(TAG, "Secuencia del jugador reseteada. Pidiendo siguiente turno a la máquina...");
+                                Log.d(TAG, "Pidiendo siguiente turno a la máquina...");
                                 getCharacterAPIColors();
+                                tvscore.setText("" + game.getScore());
                             } else {
                                 Log.d(TAG, "La secuencia es INCORRECTA. Reiniciando juego.");
                                 game.setState(Game.START);
                                 game.getTiradasMachine().clear();
                                 game.getTiradasPlayer().clear();
-                                Log.d(TAG, "ERROR VUELVE A EMPEZAR");
+                                tvscore.setText("0");
+                                tvcolor.setBackgroundColor(Color.WHITE);
+                                ivcharacter.setImageResource(R.drawable.c3po);
+
                             }
                         }else{
-                            Log.d(TAG, "SIGUE JUGANDO");
+                            //aqui debe pasar a la maquina
+                            game.setState(Game.START);
+                            game.getTiradasMachine().clear();
+                            game.getTiradasPlayer().clear();
+                            Log.d(TAG, "PERDISTE REINICIANDO");
+                            tvscore.setText("0");
+                            tvcolor.setBackgroundColor(Color.WHITE);
+                            ivcharacter.setImageResource(R.drawable.c3po);
                         }
 
                     }
@@ -225,14 +233,14 @@ public class MainActivity extends AppCompatActivity {
             sonDarkVader = soundPool.load(this, R.raw.darthvader, 1);
             sonr2d2 = soundPool.load(this, R.raw.r2d2, 1);
         //
-        game.addCharacter(new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po_blue));
-        game.addCharacter(new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po_red));
-        game.addCharacter(new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka_blue));
-        game.addCharacter(new ColorAudio(Colors.RED, sonChewbacca, R.drawable.chewaka_red));
-        game.addCharacter(new ColorAudio(Colors.BLUE, sonr2d2, R.drawable.r2d2_blue));
-        game.addCharacter(new ColorAudio(Colors.RED, sonr2d2, R.drawable.r2d2_red));
-        game.addCharacter(new ColorAudio(Colors.BLUE, sonDarkVader, R.drawable.darthvader_blue));
-        game.addCharacter(new ColorAudio(Colors.RED, sonDarkVader, R.drawable.darthvader_red));
+        game.addCharacter(new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po));
+        game.addCharacter(new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po));
+        game.addCharacter(new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka));
+        game.addCharacter(new ColorAudio(Colors.RED, sonChewbacca, R.drawable.chewaka));
+        game.addCharacter(new ColorAudio(Colors.BLUE, sonr2d2, R.drawable.r2d2));
+        game.addCharacter(new ColorAudio(Colors.RED, sonr2d2, R.drawable.r2d2));
+        game.addCharacter(new ColorAudio(Colors.BLUE, sonDarkVader, R.drawable.darthvader));
+        game.addCharacter(new ColorAudio(Colors.RED, sonDarkVader, R.drawable.darthvader));
 
     }
 
@@ -274,34 +282,39 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 CharacterColorRestClient restClient = new CharacterColorRestClient();
+
                 try {
                     listCharacter = restClient.listCharacters();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+
                             for (CharacterColor characterColor : listCharacter) {
                                 ColorAudio colorAudio = null;
                                 if (characterColor.getCharacter().equals("C3PO") && characterColor.getColor().equals("blue")) {
-                                    colorAudio = new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po_blue);
+                                    colorAudio = new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po);
                                 } else if (characterColor.getCharacter().equals("C3PO") && characterColor.getColor().equals("red")) {
-                                    colorAudio = new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po_red);
+                                    colorAudio = new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po);
                                 } else if (characterColor.getCharacter().equals("Chewaka") && characterColor.getColor().equals("blue")) {
-                                    colorAudio = new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka_blue);
+                                    colorAudio = new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka);
                                 } else if (characterColor.getCharacter().equals("Chewaka") && characterColor.getColor().equals("red")) {
-                                    colorAudio = new ColorAudio(Colors.RED, sonChewbacca, R.drawable.chewaka_red);
+                                    colorAudio = new ColorAudio(Colors.RED, sonChewbacca, R.drawable.chewaka);
                                 } else if (characterColor.getCharacter().equals("R2D2") && characterColor.getColor().equals("blue")) {
-                                    colorAudio = new ColorAudio(Colors.BLUE, sonr2d2, R.drawable.r2d2_blue);
+                                    colorAudio = new ColorAudio(Colors.BLUE, sonr2d2, R.drawable.r2d2);
                                 } else if (characterColor.getCharacter().equals("R2D2") && characterColor.getColor().equals("red")) {
-                                    colorAudio = new ColorAudio(Colors.RED, sonr2d2, R.drawable.r2d2_red);
+                                    colorAudio = new ColorAudio(Colors.RED, sonr2d2, R.drawable.r2d2);
                                 } else if (characterColor.getCharacter().equals("Darth Vader") && characterColor.getColor().equals("blue")) {
-                                    colorAudio = new ColorAudio(Colors.BLUE, sonDarkVader, R.drawable.darthvader_blue);
+                                    colorAudio = new ColorAudio(Colors.BLUE, sonDarkVader, R.drawable.darthvader);
                                 } else if (characterColor.getCharacter().equals("Darth Vader") && characterColor.getColor().equals("red")) {
-                                    colorAudio = new ColorAudio(Colors.RED, sonDarkVader, R.drawable.darthvader_red);
+                                    colorAudio = new ColorAudio(Colors.RED, sonDarkVader, R.drawable.darthvader);
                                 }
                                 if (colorAudio != null) {
                                     game.getTiradasMachine().add(colorAudio);
                                 }
                             }
+                            playMachineSequence();
+                            new Handler().postDelayed(new RunnableState(Game.PLAYER),
+                                    TIME_DELAY * game.getTiradasMachine().size());
                         }
                     });
                 } catch (IOException e) {

@@ -11,20 +11,21 @@ public class Game {
     private int score;
     ArrayList<ColorAudio> tiradasMachine;
     ArrayList<ColorAudio> tiradasPlayer;
-    private ArrayList<ColorAudio> availableCharacters; // Nueva lista para personajes disponibles
+    private ArrayList<ColorAudio> availableCharacters;
     int numColors;
     int state;
 
+    public int getScore() {
+        return score;
+    }
+    public void setScore(int score) {
+        this.score = score;
+    }
     public ArrayList<ColorAudio> getTiradasPlayer() {
         return tiradasPlayer;
     }
-
     public int getState() {
         return state;
-    }
-
-    public int getNumColors() {
-        return numColors;
     }
 
     public ArrayList<ColorAudio> getTiradasMachine() {
@@ -34,22 +35,10 @@ public class Game {
         availableCharacters.add(characterAudio);
     }
 
-    public void setNumColors(int numColors) {
-        this.numColors = numColors;
-    }
-
     public void setState(int state) {
         this.state = state;
     }
 
-
-    public void setTiradasPlayer(ArrayList<ColorAudio> tiradasPlayer) {
-        this.tiradasPlayer = tiradasPlayer;
-    }
-
-    public void setTiradasMachine(ArrayList<ColorAudio> tiradasMachine) {
-        this.tiradasMachine = tiradasMachine;
-    }
 
     public Game() {
         tiradasPlayer = new ArrayList<>();
@@ -61,13 +50,12 @@ public class Game {
 //        gameColors.add(colorAudio);
 //    }
     public void initGame(){
-        //el mismo objeto solo resetearlo
         tiradasPlayer.clear();
         tiradasMachine.clear();
         state = START;
         score = 0;
     }
-    //PARA COMPARAR COLORES
+
     public boolean CompareColors() {
         if (tiradasPlayer.size() != tiradasMachine.size()) {
             return false;
@@ -87,16 +75,11 @@ public class Game {
         score++;
         return true;
     }
-    public void nextLevel(CharacterColor characterColor) {
-        state = MACHINE;
-        tiradasPlayer.clear();;
-        //tiradasMachine.add(gameColors.set());
-
-    }
     public void play(){
         state = MACHINE;
         tiradasMachine.clear();
         tiradasPlayer.clear();
+        score = 0;
     }
 
 }
