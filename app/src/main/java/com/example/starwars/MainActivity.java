@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     SoundPool soundPool;
     private int score = 0;
     int sonc3po, sonChewbacca,sonDarkVader,sonr2d2;
-    static final int TIME_DELAY = 1000;
+    static final int TIME_DELAY = 2000;
     View.OnClickListener listener;
     ExecutorService executor;
     ImageView chewakablue,chewakared,c3poblue, c3pored,r2d2blue, r2d2red, darthvaderblue, darthvaderred, ivcharacter;
@@ -154,41 +154,29 @@ public class MainActivity extends AppCompatActivity {
                                 " Movimiento número: " + (game.getTiradasPlayer().size() + 1));
 
                         game.getTiradasPlayer().add(playerMove);
-                        new RunnableColor(playerMove).run();
-                        //ERROR, OK_LIST_EQUALS, OK_LIST_NOT_EQUALS
-                        if(game.getTiradasPlayer().size()<game.getTiradasMachine().size()){
-                            Log.d(TAG, "Esperando siguiente movimiento del jugador...");
-                        }else if(game.getTiradasPlayer().size() == game.getTiradasMachine().size()){
-
-                            if (game.CompareColors()) {
-                                game.getTiradasPlayer().clear();
-                                game.setState(MACHINE);
-                               Handler h = new Handler();
-                               h.postDelayed(new RunnnablePlayMachineSequence(), TIME_DELAY);
-                                h.postDelayed(new RunnableState(Game.PLAYER), TIME_DELAY * game.getTiradasMachine().size() + TIME_DELAY);
-                                Log.d(TAG, "Pidiendo siguiente turno a la máquina...");
-                                getCharacterAPIColors();
-                                tvscore.setText("" + game.getScore());
-                            } else {
-                                Log.d(TAG, "La secuencia es INCORRECTA. Reiniciando juego.");
-                                game.setState(Game.START);
-                                game.getTiradasMachine().clear();
-                                game.getTiradasPlayer().clear();
-                                tvscore.setText("0");
-                                tvcolor.setBackgroundColor(Color.WHITE);
-                                ivcharacter.setImageResource(R.drawable.c3po);
-
-                            }
-                        }else{
-                            //aqui debe pasar a la maquina
+                        Handler  h = new Handler();
+                        h.post(new RunnableColor(playerMove));
+                        boolean isCorrect = game.CompareColors();
+                        if (!isCorrect) {
                             game.setState(Game.START);
                             game.getTiradasMachine().clear();
                             game.getTiradasPlayer().clear();
-                            Log.d(TAG, "PERDISTE REINICIANDO");
                             tvscore.setText("0");
                             tvcolor.setBackgroundColor(Color.WHITE);
                             ivcharacter.setImageResource(R.drawable.c3po);
+                            return;
                         }
+
+                        if (game.getTiradasPlayer().size() == game.getTiradasMachine().size()) {
+                            game.getTiradasPlayer().clear();
+                            game.setState(MACHINE);
+                            h = new Handler();
+                            h.postDelayed(new RunnableState(Game.PLAYER),
+                                    TIME_DELAY * game.getTiradasMachine().size() + 1);
+                            getCharacterAPIColors();
+                            tvscore.setText("" + game.getScore());
+                        }
+
 
                     }
 

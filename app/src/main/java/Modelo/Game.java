@@ -46,9 +46,6 @@ public class Game {
         availableCharacters = new ArrayList<>();
 
     }
-//    public void addP(ColorAudio colorAudio) {
-//        gameColors.add(colorAudio);
-//    }
     public void initGame(){
         tiradasPlayer.clear();
         tiradasMachine.clear();
@@ -57,7 +54,7 @@ public class Game {
     }
 
     public boolean CompareColors() {
-        if (tiradasPlayer.size() != tiradasMachine.size()) {
+        if (tiradasPlayer.size() > tiradasMachine.size()) {
             return false;
         }
 
@@ -65,16 +62,25 @@ public class Game {
             ColorAudio playerMove = tiradasPlayer.get(i);
             ColorAudio machineMove = tiradasMachine.get(i);
 
-            if (playerMove.getImageId() != machineMove.getImageId() ||
-                    playerMove.getAudio() != machineMove.getAudio() ||
-                    playerMove.getColor() != machineMove.getColor()) {
+            if (!movesMatch(playerMove, machineMove)) {
                 return false;
             }
         }
 
-        score++;
+        if (tiradasPlayer.size() == tiradasMachine.size()) {
+            score++;
+            return true;
+        }
+
         return true;
     }
+
+    private boolean movesMatch(ColorAudio playerMove, ColorAudio machineMove) {
+        return playerMove.getImageId() == machineMove.getImageId() &&
+                playerMove.getAudio() == machineMove.getAudio() &&
+                playerMove.getColor() == machineMove.getColor();
+    }
+
     public void play(){
         state = MACHINE;
         tiradasMachine.clear();
