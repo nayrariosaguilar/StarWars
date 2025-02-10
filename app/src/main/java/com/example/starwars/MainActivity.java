@@ -33,8 +33,7 @@ import webservice.CharacterColor;
 import webservice.CharacterColorRestClient;
 
 public class MainActivity extends AppCompatActivity {
-    //random del 1 al 10 que el jugador relique
-    //num es el numero de iteraciones
+
     ArrayList<CharacterColor> listCharacter;
     Game game;
     Button bsubmit;
@@ -51,13 +50,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-
         initElements();
         game = new Game();
-        //Audio
         createSoundPool();
         initAudios();
-        //EVENTS
         initGame();
         initListener();
         setListeners();
@@ -86,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         public RunnableColor(ColorAudio c) {
             coloaudio = c;
         }
-
+        //seteamos los valores que ha escogido el jugador a la UI
         @Override
         public void run() {
             int img= coloaudio.getImageId();
@@ -110,48 +106,35 @@ public class MainActivity extends AppCompatActivity {
         listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //si el jugador ha pulsado el boton empezar
                 if (game.getState() == Game.START) {
                     if (view.getId() == bsubmit.getId()) {
                             game.play();
                         game.getTiradasMachine().clear();
                         getCharacterAPIColors();
-//                            Handler h = new Handler();
-////                            h.postDelayed(new RunnableState(Game.PLAYER)
-//                                  , TIME_DELAY * game.getTiradasMachine().size());
 
                     }
                 } else if (game.getState() == Game.PLAYER) {
                     ColorAudio playerMove = null;
+                    //añade la opcion que el jugador clica a la lista de jugadas del jugador
                     if (view.getId() == chewakablue.getId()) {
                         playerMove= new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka);
-                        Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == chewakared.getId()) {
                         playerMove= new ColorAudio(Colors.RED, sonChewbacca, R.drawable.chewaka);
-                        Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     } else if (view.getId() == c3poblue.getId()) {
                         playerMove= new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po);
-                        Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == c3pored.getId()) {
                         playerMove= new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po);
-                        Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     } else if (view.getId() == r2d2blue.getId()) {
                         playerMove= new ColorAudio(Colors.BLUE, sonr2d2, R.drawable.r2d2);
-                        Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == r2d2red.getId()) {
                         playerMove= new ColorAudio(Colors.RED, sonr2d2, R.drawable.r2d2);
-                        Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     } else if (view.getId() == darthvaderblue.getId()) {
                         playerMove= new ColorAudio(Colors.BLUE, sonDarkVader, R.drawable.darthvader);
-                        Log.d(TAG, "BLUE"+game.getTiradasPlayer().size());
                     } else if (view.getId() == darthvaderred.getId()) {
                         playerMove= new ColorAudio(Colors.RED, sonDarkVader, R.drawable.darthvader);
-                        Log.d(TAG, "RED"+game.getTiradasPlayer().size());
                     }
-                    //mientras
+
                     if(playerMove != null){
-                        Log.d(TAG,  playerMove.getColor() +
-                                " Movimiento número: " + (game.getTiradasPlayer().size() + 1));
 
                         game.getTiradasPlayer().add(playerMove);
                         Handler  h = new Handler();
@@ -166,11 +149,12 @@ public class MainActivity extends AppCompatActivity {
                             ivcharacter.setImageResource(R.drawable.c3po);
                             return;
                         }
-
+                    //Se limpian las jugadas del jugadores, y se pasa a la maquina
                         if (game.getTiradasPlayer().size() == game.getTiradasMachine().size()) {
                             game.getTiradasPlayer().clear();
                             game.setState(MACHINE);
                             h = new Handler();
+                     //control de las jugadas de la maquina despues de la primera tirada
                             h.postDelayed(new RunnableState(Game.PLAYER),
                                     TIME_DELAY * game.getTiradasMachine().size() + 1);
                             getCharacterAPIColors();
@@ -193,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
             playMachineSequence();
         }
     }
+
+    //metodo que reproduce la secuencia de la maquina
     private void playMachineSequence(){
         Handler h = new Handler();
         for(int i = 0; i < game.getTiradasMachine().size(); i++){
@@ -200,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             h.postDelayed(new MainActivity.RunnableColor(game.getTiradasMachine().get(i)), timeDelay);
         }
     }
+    //controla el estado del juego (primero maquina despues jugadores y viceversa)
     class RunnableState implements Runnable
     {
         int state = 0;
@@ -220,7 +207,8 @@ public class MainActivity extends AppCompatActivity {
             sonChewbacca = soundPool.load(this, R.raw.chewbacca, 1);
             sonDarkVader = soundPool.load(this, R.raw.darthvader, 1);
             sonr2d2 = soundPool.load(this, R.raw.r2d2, 1);
-        //
+
+            //guardamos los audios de los personajes, para poder utilizar a lo largo del codigo
         game.addCharacter(new ColorAudio(Colors.BLUE, sonc3po, R.drawable.c3po));
         game.addCharacter(new ColorAudio(Colors.RED, sonc3po, R.drawable.c3po));
         game.addCharacter(new ColorAudio(Colors.BLUE, sonChewbacca, R.drawable.chewaka));
@@ -265,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
         soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
     }
 
+    //metodo que controla la conexion con el webservice, y apartir de ella reproduce la secuencia de la maquina
     private void getCharacterAPIColors() {
         executor.execute(new Runnable() {
             @Override

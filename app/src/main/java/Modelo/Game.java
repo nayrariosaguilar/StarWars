@@ -14,7 +14,6 @@ public class Game {
     private ArrayList<ColorAudio> availableCharacters;
     int numColors;
     int state;
-
     public int getScore() {
         return score;
     }
@@ -39,7 +38,6 @@ public class Game {
         this.state = state;
     }
 
-
     public Game() {
         tiradasPlayer = new ArrayList<>();
         tiradasMachine = new ArrayList<>();
@@ -57,16 +55,16 @@ public class Game {
         if (tiradasPlayer.size() > tiradasMachine.size()) {
             return false;
         }
-
+        //Si coincides continua
         for (int i = 0; i < tiradasPlayer.size(); i++) {
             ColorAudio playerMove = tiradasPlayer.get(i);
             ColorAudio machineMove = tiradasMachine.get(i);
-
+        //si en alguno momento de la secuencia no coinciden se acaba TODO
             if (!movesMatch(playerMove, machineMove)) {
                 return false;
             }
         }
-
+        //si al final son de la misma longitud y coinciden en todas las jugadas, SIGUIENTE RONDA
         if (tiradasPlayer.size() == tiradasMachine.size()) {
             score++;
             return true;
@@ -75,12 +73,12 @@ public class Game {
         return true;
     }
 
+    //TODOS LOS ATRIBUTOS DEBEN SER IGUALES
     private boolean movesMatch(ColorAudio playerMove, ColorAudio machineMove) {
         return playerMove.getImageId() == machineMove.getImageId() &&
                 playerMove.getAudio() == machineMove.getAudio() &&
                 playerMove.getColor() == machineMove.getColor();
     }
-
     public void play(){
         state = MACHINE;
         tiradasMachine.clear();
